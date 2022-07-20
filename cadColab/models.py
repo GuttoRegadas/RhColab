@@ -2,34 +2,36 @@ from django.db import models
 
 # Create your models here.
 
-class Colaborador(models.Model):
+class Colaboradores(models.Model):
 
-#Dados Funcionais
 
-#Obs: A permissão para atualizar esta lista ficará restrita aos administradores do sistema.
 
-    nome = models.CharField(max_length=50, verbose_name="Colaborador")
-    status = models.CharField(max_length=1, verbose_name= "Status")#Campo Choices/Extrair o vínculo da planilha/campo obrigatória
-    matricula = models.IntegerField(verbose_name= "Mátricula")#se vínculo = servidor é obrigatório
-    vinculo = models.CharField(max_length=20, verbose_name="Vínculo")#Extrair o vínculo da planilha/campo obrigatória
-    area = models.CharField(max_length=20, verbose_name="Área")#lista obtida no organograma do SGA
-    cargo = models.CharField(max_length=30, verbose_name="Cargo")#Lista extraída da planilha,/Obrigatório se vínculo = Servidor
-    ingresso = models.DateField(verbose_name="Data do Ingresso")
-    posseFioce = models.DateField(verbose_name="Data da Posse")
-    empresa = models.CharField(max_length=50, verbose_name="Empresa")#Lista extraída da planilha/Obrigatório se vínculo = Terceirizado
+#Dados Funcionais------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    nome = models.CharField(max_length=50, verbose_name="Colaborador", blank = False, null=False)
+    status = models.CharField(max_length=1, verbose_name= "Status", blank = False, null=False)#Campo Choices/Extrair o vínculo da planilha/campo obrigatória
+    matricula = models.IntegerField(verbose_name= "Mátricula", blank = False, null=False, unique= True)#se vínculo = servidor é obrigatório
+    vinculo = models.CharField(max_length=20, verbose_name="Vínculo", blank = False, null=False)#Extrair o vínculo da planilha/campo obrigatória
+    area = models.CharField(max_length=20, verbose_name="Área", blank = False, null=False)#lista obtida no organograma do SGA
+#Obs: A permissão para atualizar esta lista ficará restrita aos administradores do sistema
+    cargo = models.CharField(max_length=30, verbose_name="Cargo", blank = False, null=False)#Lista extraída da planilha,/Obrigatório se vínculo = Servidor
+    ingresso = models.DateField(verbose_name="Data do Ingresso", blank = True)
+    posseFioce = models.DateField(verbose_name="Data da Posse", blank = True)
+    empresa = models.CharField(max_length=50, verbose_name="Empresa", blank = False, null=False)#Lista extraída da planilha/Obrigatório se vínculo = Terceirizado
 #Obs: Armazenar histórico de alterações
-    bolsa = models.CharField(max_length=1, verbose_name="Bolsa")#Lista extraída da planilha/Obrigatório se vínculo = Bolsista
-    coord_resp = models.CharField(max_length=30, verbose_name="Coordenador Responsável")#Lista [ RH ], opcional
-    vigenc_bolsa = models.DateField(verbose_name="Data Vigência")#Solicitado apenas para Bolsista
-    email_pess = models.EmailField(verbose_name="E-mail Pessoal")
-    adic_ocup = models.BooleanField(verbose_name="Adic. Ocupacional")
-    ramal = models.IntegerField(verbose_name="Ramal")
-    cracha = models.CharField(max_length=30, verbose_name="Crachá")
-    amb_sala = models.CharField(max_length=30, verbose_name="Sala")#Lista de Salas obtida no Controle de Claviculário
-    vacinado = models.BooleanField(verbose_name="Vaciando")
-    card_vac = models.ImageField(verbose_name="Comprovante de Vacina")
+    bolsa = models.CharField(max_length=1, verbose_name="Bolsa", blank = False, null=False)#Lista extraída da planilha/Obrigatório se vínculo = Bolsista
+    coord_resp = models.CharField(max_length=30, verbose_name="Coordenador Responsável", blank = True, null=False)#Lista [ RH ], opcional
+    vigenc_bolsa = models.DateField(verbose_name="Data Vigência" , blank = True)#Solicitado apenas para Bolsista
+    email_pess = models.EmailField(verbose_name="E-mail Pessoal" , blank = True, unique= True)
+    adic_ocup = models.BooleanField(verbose_name="Adic. Ocupacional", blank = True)
+    ramal = models.IntegerField(verbose_name="Ramal", blank = True)
+    cracha = models.CharField(max_length=30, verbose_name="Crachá", blank = True, null=False, unique= True)
+    amb_sala = models.CharField(max_length=30, verbose_name="Sala", blank = True, null=False)#Lista de Salas obtida no Controle de Claviculário
+    vacinado = models.BooleanField(verbose_name="Vaciando", blank = True)
+    card_vac = models.ImageField(verbose_name="Comprovante de Vacina", blank = True)
 
-    #Dados Pessoais
+
+#Dados Pessoais---------------------------------------------------------------------------------------------------------------------------------------------------------
     choices_genero = (
         ("MC", "Mulher cisgênera"),
         ("MT", "Mulher trans"),
@@ -223,28 +225,29 @@ class Colaborador(models.Model):
         ("13", "Prata"),
     )
 
-    genero = models.CharField(max_length=2, choices=choices_genero, verbose_name="Identidade de Gênero")
-    nascimento = models.DateField(verbose_name="Nascimento")
-    indentidade = models.IntegerField(verbose_name="Indentidade")
-    orgao_ident = models.CharField(max_length=20, verbose_name="Orgão Espedidor")
-    tel_res = models.IntegerField(verbose_name="Telefone Residêncial")
-    celular = models.IntegerField(verbose_name="Celular/Whatsapp")
-    formacao = models.CharField(max_length=50, verbose_name="Formação Acadêmica")#Armazenar histórico de alterações/Separar situação[ concluído, cursando, trancado ]  ( não será incluído no sistema )/Incluir Previsão Finalização ( não será incluído no sistema )
-    nivel_form = models.CharField(max_length=50, verbose_name="Nível de Formação")
-    endereco = models.CharField(max_length=100, verbose_name="Endereço")
-    uf = models.CharField(max_length=2, choices=choices_uf, verbose_name="UF")
-    municipio = models.CharField(max_length=30, verbose_name="Município")
-    bairro = models.CharField(max_length=30, verbose_name="Bairro")
-    logradouro = models.CharField(max_length=30, verbose_name="Logradouro")
-    num_end = models.CharField(max_length=20, verbose_name="Nº")
-    comp_end = models.CharField(max_length=50, verbose_name="Complemento")
-    cep_end = models.IntegerField(verbose_name="CEP")
-    plano_sau = models.CharField(max_length=50, verbose_name="Plano de Saúde")
-    fator_rh = models.CharField(max_length=10, verbose_name="Fator Sanguíneo")
-    banco = models.CharField(max_length=3, verbose_name="Banco")
-    obs = models.TextField(max_length=1000, verbose_name="Observações")
-    model_veic = models.CharField(max_length=30, verbose_name="Modelo do Vepiculo")
-    marca_veic = models.CharField(max_length=30, verbose_name="Marca do Veículo")
-    cor_veic = models.CharField(max_length=2, verbose_name="Cor do Veículo")
-    placa_veic = models.CharField(max_length=20)
-    foto_pess = models.ImageField(verbose_name="Foto Pessoal")
+    genero = models.CharField(max_length=2, choices=choices_genero, verbose_name="Identidade de Gênero", null=False)
+    cpf = models.CharField(max_length=15, verbose_name="CPF", blank = False, null=False, unique= True)
+    nascimento = models.DateField(verbose_name="Nascimento", blank = False)
+    identidade = models.IntegerField(verbose_name="Indentidade", blank = True, unique= True)
+    orgao_ident = models.CharField(max_length=20, verbose_name="Orgão Espedidor", blank = True, null=False)
+    tel_res = models.IntegerField(verbose_name="Telefone Residêncial", blank = True, unique= True)
+    celular = models.IntegerField(verbose_name="Celular/Whatsapp", blank = True, unique= True)
+    formacao = models.CharField(max_length=50, verbose_name="Formação Acadêmica", blank = False, null=False)#Armazenar histórico de alterações/Separar situação[ concluído, cursando, trancado ]  ( não será incluído no sistema )/Incluir Previsão Finalização ( não será incluído no sistema )
+    nivel_form = models.CharField(max_length=50, verbose_name="Nível de Formação", blank = False, null=False)
+    endereco = models.CharField(max_length=100, verbose_name="Endereço", blank = True, null=False)
+    uf = models.CharField(max_length=2, choices=choices_uf, verbose_name="UF", blank = True, null=False)
+    municipio = models.CharField(max_length=30, verbose_name="Município", blank = True, null=False)
+    bairro = models.CharField(max_length=30, verbose_name="Bairro", blank = True, null=False)
+    logradouro = models.CharField(max_length=30, verbose_name="Logradouro", blank = True, null=False)
+    num_end = models.CharField(max_length=20, verbose_name="Nº", blank = True, null=False)
+    comp_end = models.CharField(max_length=50, verbose_name="Complemento", blank = True, null=False)
+    cep_end = models.IntegerField(verbose_name="CEP", blank = True)
+    plano_sau = models.CharField(max_length=50, verbose_name="Plano de Saúde", blank = True, null=False)
+    fator_rh = models.CharField(max_length=10, verbose_name="Fator Sanguíneo", blank = True, null=False)
+    banco = models.CharField(max_length=3, verbose_name="Banco", blank = True, null=False)
+    obs = models.TextField(max_length=1000, verbose_name="Observações", blank = True, null=False)
+    model_veic = models.CharField(max_length=30, verbose_name="Modelo do Vepiculo", blank = True, null=False)
+    marca_veic = models.CharField(max_length=30, verbose_name="Marca do Veículo", blank = True, null=False)
+    cor_veic = models.CharField(max_length=2, verbose_name="Cor do Veículo", blank = True, null=False)
+    placa_veic = models.CharField(max_length=20, verbose_name="Placa do Veículo", blank = True, null=False)
+    foto_pess = models.ImageField(verbose_name="Foto Pessoal", blank = True)
