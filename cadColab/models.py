@@ -6,27 +6,45 @@ class ColabStatus(models.Model):
     descricao = models.CharField(max_length=50, verbose_name="Descrição do Status", blank = False, null=False)
 
 class ColabArea(models.Model):
-    descricao =models.CharField(max_length=50, verbose_name="Descrição do Vínculo", blank = False, null = False)
+    descricao = models.CharField(max_length=50, verbose_name="Descrição do Vínculo", blank = False, null = False)
 
 class ColabCargo(models.Model):
 
-    descricao =models.CharField(max_length=50, verbose_name="Descrição do Vínculo", blank = False, null = False)
+    descricao = models.CharField(max_length=50, verbose_name="Descrição do Vínculo", blank = False, null = False)
 
 class ColabVinculo(models.Model):
 
-    descricao =models.CharField(max_length=50, verbose_name="Descrição do Vínculo", blank = False, null = False)
+    descricao = models.CharField(max_length=50, verbose_name="Descrição do Vínculo", blank = False, null = False)
 
 class ColabEmpresa(models.Model):
 
-    descricao =models.CharField(max_length=50, verbose_name="Descrição do Vínculo", blank = False, null = False)
+    descricao = models.CharField(max_length=50, verbose_name="Descrição do Vínculo", blank = False, null = False)
 
 class ColabCoordenador(models.Model):
 
-    descricao =models.CharField(max_length=50, verbose_name="Descrição do Vínculo", blank = False, null = False)
+    descricao = models.CharField(max_length=50, verbose_name="Descrição do Vínculo", blank = False, null = False)
 
 class ColabBolsa(models.Model):
 
-    descricao =models.CharField(max_length=50, verbose_name="Descrição do Vínculo", blank = False, null = False)
+    descricao = models.CharField(max_length=50, verbose_name="Descrição do Vínculo", blank = False, null = False)
+
+class ColabFomacao(models.Model):
+
+    formacao = models.CharField(max_length=100, verbose_name="Formação", blank = False, null = False)
+
+class ColabNivelForm(models.Model):
+
+    descrição = models.CharField(max_length=100, verbose_name="Nível de Formação", blank = False, null = False)
+
+class Colab_Uf(models.Model):
+
+    sigla = models.CharField(max_length=6, verbose_name="Sigla do Estado", blank = False, null = False)
+    estado = models.CharField(max_length=50, verbose_name="Estado", blank = False, null = False)
+
+class ColabMunicipio(models.Model):
+
+    uf = models.ForeignKey(Colab_Uf, on_delete= models.RESTRICT, verbose_name="UF", blank = False, null = False)
+    municipio = models.CharField(max_length=100, verbose_name="Município", blank = False, null = False)
 
 
 
@@ -62,12 +80,12 @@ class Colaboradores(models.Model):
     bolsa = models.ForeignKey(ColabBolsa, on_delete=models.RESTRICT)
 
     #coord_resp = models.CharField(max_length=30, verbose_name="Coordenador Responsável", blank = True, null=False)#Lista [ RH ], opcional
-    coord_resp = models.ForeignKey(ColabCoordenador, on_delete=models.CASCADE)
+    coord_resp = models.ForeignKey(ColabCoordenador, on_delete=models.RESTRICT)
 
     vigenc_bolsa = models.DateField(verbose_name="Data Vigência" , blank = True)#Solicitado apenas para Bolsista
     email_pess = models.EmailField(verbose_name="E-mail Pessoal" , blank = True, unique= True)
     adic_ocup = models.BooleanField(verbose_name="Adic. Ocupacional", blank = True)
-    ramal = models.IntegerField(verbose_name="Ramal", blank = True)
+    ramal = models.CharField(max_length=12, verbose_name="Ramal", blank = True)
     cracha = models.CharField(max_length=30, verbose_name="Crachá", blank = True, null=False, unique= True)
     amb_sala = models.CharField(max_length=30, verbose_name="Sala", blank = True, null=False)#Lista de Salas obtida no Controle de Claviculário
     vacinado = models.BooleanField(verbose_name="Vaciando", blank = True)
@@ -82,36 +100,8 @@ class Colaboradores(models.Model):
         ("HT", "Homem trans"),
         ("NB", "Pessoa não-binária"),
         ("NL", "Nenhuma das opções listadas"),
-        ("NR", "Prefiro não responder"))
-    choices_uf = (
-        ("AC", "Acre"),
-        ("AL", "Alagoas"),
-        ("AM", "Amazonas"),
-        ("AP", "Amapá"),
-        ("BA", "Bahia"),
-        ("CE", "Ceará"),
-        ("DF", "Distrito Federal"),
-        ("ES", "Espírito Santo"),
-        ("GO", "Goiás"),
-        ("MA", "Maranhão"),
-        ("MG", "Minas Gerais"),
-        ("MS", "Mato Grosso do Sul"),
-        ("MT", "Mato Grosso"),
-        ("PA", "Pará"),
-        ("PB", "Paraíba"),
-        ("PE", "Pernambuco"),
-        ("PI", "Piauí"),
-        ("PR", "Paraná"),
-        ("RJ", "Rio de Janeiro"),
-        ("RN", "Rio Grande do Norte"),
-        ("RO", "Rondônia"),
-        ("RR", "Roraima"),
-        ("RS", "Rio Grande do Sul"),
-        ("SC", "Santa Catarina"),
-        ("SE", "Sergipe"),
-        ("SP", "São Paulo"),
-        ("TO", "Tocantins"),
-    )
+        ("NR", "Prefiro não responder"),
+        )
 
     choices_cor_veic = (
         ("1", "Branco"),
@@ -145,13 +135,12 @@ class Colaboradores(models.Model):
     nascimento = models.DateField(verbose_name="Data Nascimento", blank = False)
     rg_ident = models.IntegerField(verbose_name="Identidade")
     orgao_ident = models.CharField(max_length=20, verbose_name="Orgão Espedidor", blank = True, null=False)
-    tel_res = models.CharField(max_length=25,verbose_name="Telefone Residêncial", blank = True, unique= True)
+    tel_res = models.CharField(max_length=25,verbose_name="Telefone Residêncial", blank = True)
     celular = models.CharField(max_length=25,verbose_name="Celular/Whatsapp", blank = True, unique= True)
     formacao = models.CharField(max_length=50, verbose_name="Formação Acadêmica", blank = False, null=False)#Armazenar histórico de alterações/Separar situação[ concluído, cursando, trancado ]  ( não será incluído no sistema )/Incluir Previsão Finalização ( não será incluído no sistema )
-    nivel_form = models.CharField(max_length=50, verbose_name="Nível de Formação", blank = False, null=False)
+    nivel_form = models.ForeignKey(ColabNivelForm, verbose_name="Nível de Formação", on_delete=models.RESTRICT, blank = False, null = True)
     endereco = models.CharField(max_length=100, verbose_name="Endereço", blank = True, null=False)
-    uf = models.CharField(max_length=2, choices=choices_uf, verbose_name="UF", blank = True, null=False)
-    municipio = models.CharField(max_length=30, verbose_name="Município", blank = True, null=False)
+    uf_municipio = models.ForeignKey(ColabMunicipio, verbose_name = "UF/Município", on_delete=models.RESTRICT, null = True)
     bairro = models.CharField(max_length=30, verbose_name="Bairro", blank = True, null=False)
     logradouro = models.CharField(max_length=30, verbose_name="Logradouro", blank = True, null=False)
     num_end = models.CharField(max_length=20, verbose_name="Nº", blank = True, null=False)
