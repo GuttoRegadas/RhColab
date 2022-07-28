@@ -18,4 +18,6 @@ class ColaboradoresAdmin(admin.ModelAdmin):
             "custom.js",
             )
 
-admin.site.register(ColabStatus)
+@admin.register(ColabStatus)
+class ColabStatusAdmin(admin.ModelAdmin):
+    view_on_site = True

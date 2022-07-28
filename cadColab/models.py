@@ -4,6 +4,10 @@ from .validators import arq_pdf_img, arq_pdf
 # Create your models here.
 
 class ColabStatus(models.Model):
+    class Meta:
+        verbose_name = "Status"
+        verbose_name_plural = "Status"
+
     colabStatus = models.CharField(max_length=50, verbose_name="Descrição do Status", blank=True, null=True)
     def __str__(self):
         return f'{self.colabStatus}'
@@ -53,6 +57,10 @@ class ColabMunicipio(models.Model):
 
 
 class Colaboradores(models.Model):
+
+    class Meta:
+        verbose_name = "Colaboradores"
+        verbose_name_plural = "Colaboradores"
 
     def __str__(self):
         return f'{self.nome}'
