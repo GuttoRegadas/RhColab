@@ -1,9 +1,12 @@
 from django.db import models
-
+import os
+from .validators import arq_pdf_img, arq_pdf
 # Create your models here.
 
 class ColabStatus(models.Model):
     colabStatus = models.CharField(max_length=50, verbose_name="Descrição do Status", blank=True, null=True)
+    def __str__(self):
+        return f'{self.colabStatus}'
 
 class ColabArea(models.Model):
     colabArea = models.CharField(max_length=50, verbose_name="Descrição do Vínculo", blank=True, null=True)
@@ -50,6 +53,9 @@ class ColabMunicipio(models.Model):
 
 
 class Colaboradores(models.Model):
+
+    def __str__(self):
+        return f'{self.nome}'
     
 #Dados Funcionais------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -92,7 +98,7 @@ class Colaboradores(models.Model):
     cracha = models.CharField(max_length=30, verbose_name="Crachá", blank = True)
     amb_sala = models.CharField(max_length=30, verbose_name="Sala", blank = True)#Lista de Salas obtida no Controle de Claviculário
     vacinado = models.BooleanField(verbose_name="Vacinação", blank = True)
-    card_vac = models.CharField(max_length=255, verbose_name="Comprovante de Vacina", blank = True)
+    card_vac = models.FileField(max_length=255, upload_to = 'Cartão de Vacina', verbose_name="Comprovante de Vacina", blank = True, null=True, validators=[arq_pdf_img])
 
 
 #Dados Pessoais---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -136,7 +142,7 @@ class Colaboradores(models.Model):
     logradouro = models.CharField(max_length=30, verbose_name="Logradouro", blank = False)
     num_end = models.CharField(max_length=20, verbose_name="Nº", blank = True)
     comp_end = models.CharField(max_length=50, verbose_name="Complemento", blank = True)
-    cep_end = models.CharField(max_length= 8, verbose_name="CEP", blank = True)
+    cep_end = models.CharField(max_length= 20, verbose_name="CEP", blank = True)
     plano_sau = models.CharField(max_length=50, verbose_name="Plano de Saúde", blank = True)
     banco = models.CharField(max_length=100, verbose_name="Banco", blank = True)
     model_veic = models.CharField(max_length=30, verbose_name="Modelo do Veículo", blank = True)
@@ -159,5 +165,47 @@ class Colaboradores(models.Model):
     )
     cor_veic = models.CharField(max_length=2, choices=choices_cor_veic, verbose_name="Cor do Veículo", blank = True)
     placa_veic = models.CharField(max_length=20, verbose_name="Placa do Veículo", blank = True)
-    foto_pess = models.CharField(max_length=255, verbose_name="Foto Pessoal", blank = True)
+    foto_pess = models.FileField(max_length=255, upload_to="Foto", verbose_name="Foto Pessoal", blank = True, validators=[arq_pdf_img])
     obs = models.TextField(max_length=1000, verbose_name="Observações", blank = True)
+
+
+# UpLoad do cartão de vacinação "card_vac"----------------------------------------------------------------------------
+    def delete(self, using=None, keep_parents=False):
+        if self.card_vac.name:
+            self.card_vac.storage.delete(self.card_vac.name)
+        super().delete()
+
+    def __init__(self, *args, **kwargs):
+        super( Colaboradores, self).__init__(*args, **kwargs)
+        setattr(self, '__original_card_vac', getattr(self, 'card_vac'))
+        
+    def save( self, *args, **kwargs ):
+        fd_ant = getattr(self, '__original_card_vac') 
+        if fd_ant:
+            fd_ant = fd_ant.path
+            fd_new = getattr(self, 'card_vac')
+            if fd_ant != fd_new:
+                if os.path.exists( fd_ant ):
+                    os.remove( fd_ant )
+#---------------------------------------------------------------------------------------------------------------------
+
+# UpLoad do foto pessoal "foto_pess"----------------------------------------------------------------------------------
+
+    def delete(self, using=None, keep_parents=False):
+        if self.foto_pess.name:
+            self.foto_pess.storage.delete(self.foto_pess.name)
+        super().delete()
+
+    def __init__(self, *args, **kwargs):
+        super( Colaboradores, self).__init__(*args, **kwargs)
+        setattr(self, '__original_foto_pess', getattr(self, 'foto_pess'))
+        
+    def save( self, *args, **kwargs ):
+        fd_ant = getattr(self, '__original_foto_pess') 
+        if fd_ant:
+            fd_ant = fd_ant.path
+            fd_new = getattr(self, 'foto_pess')
+            if fd_ant != fd_new:
+                if os.path.exists( fd_ant ):
+                    os.remove( fd_ant )
+#---------------------------------------------------------------------------------------------------------------------
