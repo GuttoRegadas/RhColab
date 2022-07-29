@@ -145,7 +145,6 @@ class Colaboradores(models.Model):
 
     coord_resp = models.ForeignKey(ColabCoordenador, on_delete=models.PROTECT)#Lista [ RH ], opcional
 
-
     vigenc_bolsa = models.DateField(verbose_name="Data Vigência" , blank = True, null=True)#Solicitado apenas para Bolsista
 
     email_pess = models.EmailField(verbose_name="E-mail Pessoal" , blank = True, null=True)
@@ -266,29 +265,42 @@ def pre_save_image(sender, instance, *args, **kwargs):
 #---------------------------------------------------------------------------------------------------------------------
 
 # UpLoad do foto pessoal "foto_pess"----------------------------------------------------------------------------------
-'''
-    def delete(self, using=None, keep_parents=False):
-        if self.foto_pess.name:
-            self.foto_pess.storage.delete(self.foto_pess.name)
-        super().delete()
 
     def __init__(self, *args, **kwargs):
         super( Colaboradores, self).__init__(*args, **kwargs)
-        setattr(self, '__original_foto_pess', getattr(self, 'foto_pess'))
+        setattr(self, '__original_card_vac', getattr(self, 'card_vac'))
         
     def save( self, *args, **kwargs ):
-        fd_ant = getattr(self, '__original_foto_pess') 
+        fd_ant = getattr(self, '__original_card_vac') 
         if fd_ant:
             fd_ant = fd_ant.path
-            fd_new = getattr(self, 'foto_pess')
+            fd_new = getattr(self, 'card_vac')
             if fd_ant != fd_new:
                 if os.path.exists( fd_ant ):
                     os.remove( fd_ant )
 
-            # Chamando o save padrão.
-        if 'update_fields' not in kwargs:
-            kwargs['update_fields'] = []
-        kwargs['update_fields'] += ['foto_pess']                 
+        # Chamando o save padrão.
         super( Colaboradores, self ).save( *args, **kwargs )
-'''
+
+ 
+@receiver( pre_save, sender = Colaboradores )
+def pre_save_image(sender, instance, *args, **kwargs):
+    """ instance old image file will delete from os """
+    try:
+        print('Entrou Ficha pre_save')
+        old_arq = instance.__class__.objects.get( id = instance.id ).foto_pess.path
+        print( f"old_arq { old_arq }" )
+        try:
+            new_arq = instance.foto_pess.path
+            print( f"new_arq { new_arq }" )
+        except:
+            new_arq = None
+            print( f"new_arq except{ new_arq }" )
+        if new_arq != old_arq:
+            print( f"new_arq:{ new_arq } != old_arq:{ old_arq }" )
+            if os.path.exists( old_arq ):
+                print( "os.path.exists( old_arq )" )
+                os.remove( old_arq )
+    except:
+        pass
 #---------------------------------------------------------------------------------------------------------------------
