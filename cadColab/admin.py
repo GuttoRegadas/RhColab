@@ -1,8 +1,9 @@
 from django.contrib import admin
 
 # Register your models here.
-from cadColab.models import Colaboradores, ColabStatus, ColabArea
+from cadColab.models import Colaboradores, ColabStatus, ColabArea, ColabCargo, ColabVinculo, ColabEmpresa, ColabCoordenador, ColabBolsa, ColabFomacao, ColabNivelForm, Colab_Uf, ColabMunicipio
 from cadColab.forms import ColaboradoresForms
+
 
 
 
@@ -17,7 +18,54 @@ class ColaboradoresAdmin(admin.ModelAdmin):
             "jquery.mask.min.js",
             "custom.js",
             )
+#    def save_model(self, request, obj, form, change):
+#        super().save_model(request, obj, form, change)
+
+
+
 
 @admin.register(ColabStatus)
 class ColabStatusAdmin(admin.ModelAdmin):
     view_on_site = True
+
+@admin.register(ColabArea)
+class ColabAreaAdmin(admin.ModelAdmin):
+    view_on_site = True
+
+@admin.register(ColabCargo)
+class ColabCargoAdmin(admin.ModelAdmin):
+    view_on_site = True
+
+@admin.register(ColabVinculo)
+class ColabVinculoAdmin(admin.ModelAdmin):
+    view_on_site = True
+
+@admin.register(ColabEmpresa)
+class ColabEmpresaAdmin(admin.ModelAdmin):
+    view_on_site = True
+
+@admin.register(ColabCoordenador)
+class ColabCoordenadorAdmin(admin.ModelAdmin):
+    view_on_site = True
+
+@admin.register(ColabBolsa)
+class ColabBolsaAdmin(admin.ModelAdmin):
+    view_on_site = True
+
+@admin.register(ColabFomacao)
+class ColabFomacaoAdmin(admin.ModelAdmin):
+    view_on_site = True
+
+@admin.register(ColabNivelForm)
+class ColabNivelFormAdmin(admin.ModelAdmin):
+    view_on_site = True
+
+@admin.register(Colab_Uf)
+class Colab_UfAdmin(admin.ModelAdmin):
+    view_on_site = True
+    list_display = ("sigla", "nome")
+
+@admin.register(ColabMunicipio)
+class ColabMunicipioAdmin(admin.ModelAdmin):
+    view_on_site = True
+    list_display = ("uf", "municipio")
